@@ -13,7 +13,7 @@ use std::{fs::File, io::Write};
 fn main() -> Result<(), Error> {
     let distances: Vec<_> = [
         0, 12, 3, 23, 1, 5, 23, 56, 12, 11, //
-        12, 0, 9, 18, 3, 41, 45, 5, 41, 21, //
+        12, 0, 9, 18, 3, 41, 45, 5, 41, 27, //
         3, 9, 0, 89, 56, 21, 12, 48, 14, 29, //
         23, 18, 89, 0, 87, 46, 75, 17, 50, 42, //
         1, 3, 56, 87, 0, 55, 22, 86, 14, 33, //
@@ -21,7 +21,7 @@ fn main() -> Result<(), Error> {
         23, 45, 12, 75, 22, 21, 0, 11, 57, 48, //
         56, 5, 48, 17, 86, 76, 11, 0, 63, 24, //
         12, 41, 14, 50, 14, 54, 57, 63, 0, 9, //
-        11, 27, 29, 42, 33, 81, 48, 24, 90, 0, //
+        11, 27, 29, 42, 33, 81, 48, 24, 9, 0, //
     ]
     .iter()
     .map(|v| *v as f64)
@@ -57,7 +57,7 @@ fn main() -> Result<(), Error> {
     };
     table.set_format(*FORMAT_BOX_CHARS);
 
-    let mut out = File::create("ant-system.out")?;
+    let mut out = File::create("ant-colony-system.out")?;
 
     writeln!(out, "Parámetros")?;
     writeln!(out, "{}\n", table)?;

@@ -167,8 +167,9 @@ impl AntSystem {
 
         // Update the arc "curr <-> choosen"
         let pheromone = self.pheromones[[curr, choosen]];
-        self.pheromones[[curr, choosen]] =
-            (1.0 - self.phi) * pheromone + self.phi * self.initial_pheromone;
+        let new_value = (1.0 - self.phi) * pheromone + self.phi * self.initial_pheromone;
+        self.pheromones[[curr, choosen]] = new_value;
+        self.pheromones[[choosen, curr]] = new_value;
 
         writeln!(
             out,
@@ -209,7 +210,7 @@ impl AntSystem {
                 continue;
             }
 
-            // Calculate the probability for a this city
+            // Calculate the probability for this city
             let pheromone = self.pheromones[[curr, city]].powf(self.alpha);
             let visibility = self.visibility[[curr, city]].powf(self.beta);
             let prod = pheromone * visibility;
@@ -260,8 +261,9 @@ impl AntSystem {
 
         // Update the arc "curr <-> choosen"
         let pheromone = self.pheromones[[curr, choosen]];
-        self.pheromones[[curr, choosen]] =
-            (1.0 - self.phi) * pheromone + self.phi * self.initial_pheromone;
+        let new_value = (1.0 - self.phi) * pheromone + self.phi * self.initial_pheromone;
+        self.pheromones[[curr, choosen]] = new_value;
+        self.pheromones[[choosen, curr]] = new_value;
 
         writeln!(
             out,
@@ -324,7 +326,9 @@ impl AntSystem {
                     continue;
                 }
 
-                let evaporation = if edges.contains(&(r, c)) {
+                let traveled = edges.contains(&(r, c)) || edges.contains(&(c, r));
+
+                let evaporation = if traveled {
                     (1.0 - self.rho) * self.pheromones[[r, c]]
                 } else {
                     self.pheromones[[r, c]]
@@ -338,14 +342,12 @@ impl AntSystem {
                     evaporation
                 )?;
 
-                self.pheromones[[r, c]] = evaporation;
-
-                if edges.contains(&(r, c)) {
+                if traveled {
                     let w = self.rho * (self.q / cost);
                     write!(out, "+ {} ", w)?;
                     self.pheromones[[r, c]] += w;
                 } else {
-                    write!(out, "+ 0.0 ")?;
+                    write!(out, "+ 0.0")?;
                 }
 
                 writeln!(out, "= {}", self.pheromones[[r, c]])?;
